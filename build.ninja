@@ -1,0 +1,12 @@
+cc = gcc
+cflags = -Wall -Wextra
+
+rule cc
+ command = $cc $cflags -c $in -o $out
+rule ln
+ command = $cc $cflags $in -o $out
+
+build obj/noncc: ln obj/main.o
+build obj/main.o: cc src/main.c
+
+default obj/noncc
