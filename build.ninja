@@ -1,12 +1,13 @@
 cc = gcc
-cflags = -Wall -Wextra
+cflags = -Wall -Wextra -Iinclude
 
 rule cc
  command = $cc $cflags -c $in -o $out
 rule ln
  command = $cc $cflags $in -o $out
 
-build obj/noncc: ln obj/main.o
-build obj/main.o: cc src/main.c
+build obj/noncc: ln obj/main.o obj/lexer.o
+build obj/main.o: cc src/main.c | include/lexer.h
+build obj/lexer.o: cc src/lexer.c | include/lexer.h
 
 default obj/noncc
