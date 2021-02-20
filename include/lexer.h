@@ -13,7 +13,7 @@ typedef struct {
 	} type;
 	union {
 		struct {
-			int word_length;
+			char *word_buffer;
 		};
 	};
 } token;

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include "lexer.h"
 
@@ -21,28 +22,25 @@ void lexer_destroy(lexer *l)
 
 token lexer_next_token(lexer *l)
 {
-	char buffer;
-	fread(&buffer, 1, 1, l->src);
-	while (!feof(l->src) && (
-	       buffer == ' ' ||
-	       buffer == '\t' ||
-	       buffer == '\n' ||
-	       buffer == '\r') ) {
-		fread(&buffer, 1, 1, l->src);
+	int buffer = fgetc(l->src);
+	while (buffer != EOF && isspace(buffer)) {
+		buffer = fgetc(l->src);
 	}
 	if (feof(l->src)) {
 		return (token) { .type = TOKEN_EOF };
 	}
-	int len = 0;
-	while (!feof(l->src) && !(
-	       buffer == ' ' ||
-	       buffer == '\t' ||
-	       buffer == '\n' ||
-	       buffer == '\r') ) {
+	int len = 0, cap = 8;
+	token word = { .type = TOKEN_WORD, .word_buffer = malloc(8) };
+	while (buffer != EOF && !isspace(buffer)) {
 		len += 1;
-		fread(&buffer, 1, 1, l->src);
+		if (len + 1 > cap) {
+			word.word_buffer = realloc(word.word_buffer, cap *= 2);
+		}
+		word.word_buffer[len - 1] = buffer;
+		buffer = fgetc(l->src);
 	}
-	return (token) { .type = TOKEN_WORD, .word_length = len };
+	word.word_buffer[len] = 0;
+	return word;
 }
 
 int lexer_eof(lexer *l)

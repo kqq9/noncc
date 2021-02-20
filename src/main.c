@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
 	token t = lexer_next_token(l);
 	while (t.type != TOKEN_EOF) {
-		printf("%d\n", t.word_length);
+		printf("%s\n", t.word_buffer);
 		t = lexer_next_token(l);
 	}
 
