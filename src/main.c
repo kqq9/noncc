@@ -12,10 +12,11 @@ int main(int argc, char *argv[])
 	FILE *f = fopen(fname, "r");
 	lexer *l = lexer_create(f);
 
-	token t = lexer_next_token(l);
-	while (t.type != TOKEN_EOF) {
-		printf("%s\n", t.word_buffer);
-		t = lexer_next_token(l);
+	token *t = lexer_token(l);
+	lexer_next_token(l);
+	while (t->type != TOKEN_EOF) {
+		printf("%s\n", t->word_buffer);
+		lexer_next_token(l);
 	}
 
 	lexer_destroy(l);

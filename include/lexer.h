@@ -20,8 +20,8 @@ typedef struct {
 
 lexer *lexer_create(FILE *);
 void lexer_destroy(lexer *);
-
-token lexer_next_token(lexer *);
+token *lexer_token(lexer *);
+void lexer_next_token(lexer *);
 int lexer_eof(lexer *);
 
 #endif
