@@ -9,11 +9,14 @@ struct lexer_
 	token *t;
 };
 
+void lexer_token_reset(lexer *);
+
 lexer *lexer_create(FILE *f)
 {
 	lexer *l = malloc(sizeof(lexer));
 	l->src = f;
 	l->t = malloc(sizeof(token));
+	l->t->type = TOKEN_EOF;
 	return l;
 }
 
@@ -28,15 +31,19 @@ token *lexer_token(lexer *l)
 	return l->t;
 }
 
-void lexer_next_token(lexer *l)
+void lexer_token_reset(lexer *l)
 {
 	if (l->t->type == TOKEN_WORD) {
 		free(l->t->word_buffer);
 	}
-	int buffer = fgetc(l->src);
-	while (buffer != EOF && isspace(buffer)) {
-		buffer = fgetc(l->src);
-	}
+}
+
+void lexer_token_next(lexer *l)
+{
+	lexer_token_reset(l);
+
+	int buffer;
+	while (buffer = fgetc(l->src), buffer != EOF && isspace(buffer));
 	if (feof(l->src)) {
 		l->t->type = TOKEN_EOF;
 		return;
